@@ -6,7 +6,6 @@
 // TODO: Twitch front page observer
 // TODO: iHeartRadio "buffering" class as playing
 
-// TODO: fix hotkey chooser
 // TODO: fix localization
 // TODO: toggle button icon
 // TODO: optional button
@@ -279,25 +278,15 @@
   }
 
   function chooseHotkey() {
-    const sdkPanel = require('sdk/panel').Panel;
-    let panel = sdkPanel({
-      width: 380,
-      height: 280,
-      contentURL: ('./preferences/panel.html'),
-      contentScriptFile: ('./preferences/panel.js')
+    let panel = require("sdk/panel").Panel({
+      width: 260,
+      height: 90,
+      contentURL: ("./preferences/panel.html"),
+      contentScriptFile: ("./preferences/panel.js")
     });
-    panel.port.emit('panel', {
-      title: _("chooseHotkeyTitle"),
-      toggleAllTabs: simplePrefs.prefs["hotkey-toggleAllTabs"],
-      smartPause: simplePrefs.prefs["hotkey-smartPause"]
-    });
-
-    panel.port.on('toggleAllTabs', (msg) => {
-      simplePrefs.prefs["hotkey-toggleAllTabs"] = msg;
-      resetHotkey();
-    });
-    panel.port.on('smartPause', (msg) => {
-      simplePrefs.prefs["hotkey-smartPause"] = msg;
+    panel.port.emit("init", simplePrefs.prefs["hotkey-value"]);
+    panel.port.on("hotkey", function (msg) {
+      simplePrefs.prefs["hotkey-value"] = msg;
       resetHotkey();
     });
     panel.show();
@@ -310,7 +299,10 @@
     }
   }
 
-  function createHotkey() {
+  function resetHotkey() {
+    if (hotkey) {
+      hotkey.destroy();
+    }
     hotkey = require("sdk/hotkeys").Hotkey({
       combo: simplePrefs.prefs["hotkey-value"],
       onPress: buttonAction
@@ -331,7 +323,7 @@
     simplePrefs.on("invert-indicator", resetIndicators);
     simplePrefs.on("choose-hotkey", chooseHotkey);
     resetPageMod();
-    createHotkey();
+    resetHotkey();
     createButton();
   };
 })();
