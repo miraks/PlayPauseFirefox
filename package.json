@@ -18,6 +18,10 @@
     "fr": {
       "title": "Play/Pause",
       "description": "Ajoute un bouton Lecture/Pause sur les onglets qui contiennent un lecteur audio/video HTML5."
+    },
+    "ru": {
+      "title": "Play/Pause",
+      "description": "Добавляет переключатель Play/Pause на вкладки содержащие аудио- или видео-плеер HTML5."
     }
   },
   "preferences": [
