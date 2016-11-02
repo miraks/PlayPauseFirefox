@@ -14,6 +14,12 @@
       "https://w.soundcloud.com/"
     ]
   },
+  "locales": {
+    "fr": {
+      "title": "Play/Pause",
+      "description": "Ajoute un bouton Lecture/Pause sur les onglets qui contiennent un lecteur audio/video HTML5."
+    }
+  },
   "preferences": [
     {
       "name": "do-embeds",
@@ -28,27 +34,27 @@
       "description": "",
       "type": "bool",
       "value": false
+    }, 
+    {
+      "name": "choose-hotkey",
+      "title": "Choose hotkey",
+      "description": "",
+      "type": "control",
+      "label": "choose"
     },
     {
-      "name": "hotkey-mode",
-      "title": "Play/Pause hotkey (Ctrl-Alt-P) action",
-      "description": "",
-      "type": "menulist",
-      "value": 0,
-      "options": [
-        {
-          "value": "0",
-          "label": "None"
-        },
-        {
-          "value": "1",
-          "label": "Toggle Play/Pause for all tabs"
-        },
-        {
-          "value": "2",
-          "label": "Smart Pause"
-        }
-      ]
+      "name": "hotkey-smartPause",
+      "title": "hotkey-smartPause",
+      "type": "string",
+      "value": "",
+      "hidden": true
+    },
+    {
+      "name": "hotkey-toggleAllTabs",
+      "title": "hotkey-toggleAllTabs",
+      "type": "string",
+      "value": "",
+      "hidden": true
     }
   ]
 }

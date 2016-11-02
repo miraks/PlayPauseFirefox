@@ -3,6 +3,9 @@
 //     (c) 2015-2016 Daniel Kamkha
 //     Play/Pause is free software distributed under the terms of the MIT license.
 
+/* jshint esversion: 6 */
+/* jshint node: true */
+
 // TODO: Twitch front page observer
 // TODO: iHeartRadio "buffering" class as playing
 
@@ -12,6 +15,7 @@
   const { viewFor } = require("sdk/view/core");
   const { getTabId } = require("sdk/tabs/utils");
   const simplePrefs = require("sdk/simple-prefs");
+  const _ = require("sdk/l10n").get;
 
   const playSymbol = "▶";
   const pauseSymbol = "❚❚";
@@ -23,11 +27,12 @@
   const fixTabAttributes = ["pinned", "selected", "visuallyselected"];
   const fixSoundAttributes = ["soundplaying", "muted"];
 
-  const experimentalSupport = [/.*allmusic\.com.*/, /.*facebook\.com.*/];
+  const experimentalSupport = [/.*allmusic\.com.*/, /.*facebook\.com.*/, /.*inoreader\.com.*/];
 
   let workers = {}; // workers cache
   let pageMod = null;
-  let hotkey = null;
+  let hotkeyToggleAllTabs = null;
+  let hotkeySmartPause = null;
   let smartPauseTabs = null;
 
   function getPlayPauseElement(xulTab) {
@@ -48,7 +53,7 @@
       playPause = chromeDocument.createElement("div");
       playPause.setAttribute("anonid", "play-pause");
       playPause.style.pointerEvents = "all";
-      playPause.style.cursor = "default";
+      playPause.style.cursor = "pointer";
       playPause.style.marginRight = "0.25em";
 
       let tabMixPlusHack = !!xulTab.onMouseCommand && !xulTab.mouseDownSelect;
@@ -271,26 +276,80 @@
     }
   }
 
+  function chooseHotkey() {
+    const sdkPanel = require('sdk/panel').Panel;
+    let panel = sdkPanel({
+      width: 380,
+      height: 280,
+      contentURL: ('./preferences/panel.html'),
+      contentScriptFile: ('./preferences/panel.js')
+    });
+    panel.port.emit('panel', {
+      title: _("chooseHotkeyTitle"),
+      toggleAllTabs: simplePrefs.prefs["hotkey-toggleAllTabs"],
+      smartPause: simplePrefs.prefs["hotkey-smartPause"],
+    });
+
+    panel.port.on('toggleAllTabs', (msg) => {
+      simplePrefs.prefs["hotkey-toggleAllTabs"] = msg;
+      resetHotkey();
+    });
+    panel.port.on('smartPause', (msg) => {
+      simplePrefs.prefs["hotkey-smartPause"] = msg;
+      resetHotkey();
+    });
+    panel.show();
+  }
+
   function resetHotkey() {
-    if (hotkey) {
-      hotkey.destroy();
-      hotkey = null;
+    const hotkeys = require("sdk/hotkeys").Hotkey;
+    if (hotkeyToggleAllTabs) {
+      hotkeyToggleAllTabs.destroy();
+      hotkeyToggleAllTabs = null;
+    }
+    if (hotkeySmartPause) {
+      hotkeySmartPause.destroy();
+      hotkeySmartPause = null;
     }
 
-    let action = [null, toggleAllTabs, smartPause][simplePrefs.prefs["hotkey-mode"]];
-    if (action) {
-      hotkey = require("sdk/hotkeys").Hotkey({
-        combo: "accel-alt-p",
-        onPress: action
+    var comboToggleAllTabs = simplePrefs.prefs["hotkey-toggleAllTabs"];
+    if (comboToggleAllTabs !== "") {
+      hotkeyToggleAllTabs = hotkeys({
+        combo: comboToggleAllTabs,
+        onPress: toggleAllTabs
       });
     }
+    var comboSmartPause = simplePrefs.prefs["hotkey-smartPause"];
+    if (comboSmartPause !== "") {
+      hotkeySmartPause = hotkeys({
+        combo: comboSmartPause,
+        onPress: smartPause
+      });
+    }
+  }
+
+  function playPauseButton() {
+    const actionButton = require("sdk/ui").ActionButton;
+    actionButton({
+      id: "buttonToggleAllTabs",
+      label: _("buttonTitleToggleAllTabs"),
+      icon: "./images/toggleAllTabs.png",
+      onClick: toggleAllTabs
+    });
+    actionButton({
+      id: "buttonSmartPause",
+      label: _("buttonTitleSmartPause"),
+      icon: "./images/smartPause.png",
+      onClick: smartPause
+    });
   }
 
   exports.main = function() {
     simplePrefs.on("do-embeds", resetPageMod);
     simplePrefs.on("invert-indicator", resetIndicators);
-    simplePrefs.on("hotkey-mode", resetHotkey);
+    simplePrefs.on("choose-hotkey", chooseHotkey);
     resetPageMod();
     resetHotkey();
+    playPauseButton();
   };
 })();
