@@ -8,7 +8,7 @@
 
   const generalPlayers = [
     {  // YouTube HTML5 on-site
-      regex: /.*\.youtube\.com\/watch\?.*/,
+      regex: /.*youtube\.com.*/,
       selector: ".ytp-play-button",
       indicatorSelector: "#movie_player",
       playingClass: "playing-mode",
@@ -16,7 +16,7 @@
       create: PlayPause.SingleButtonGenericPlayer
     },
     {  // YouTube Flash on-site
-      regex: /.*\.youtube\.com\/watch\?.*/,
+      regex: /.*youtube\.com.*/,
       selector: "object, embed",
       srcRegex: /.*\.youtube\.com.*/,
       stateGetterName: "getPlayerState",

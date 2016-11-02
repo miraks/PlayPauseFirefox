@@ -3,9 +3,6 @@
 //     (c) 2015-2016 Daniel Kamkha
 //     Play/Pause is free software distributed under the terms of the MIT license.
 
-/* jshint esversion: 6 */
-/* jshint node: true */
-
 // TODO: Twitch front page observer
 // TODO: iHeartRadio "buffering" class as playing
 
