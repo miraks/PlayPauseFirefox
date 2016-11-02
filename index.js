@@ -6,6 +6,12 @@
 // TODO: Twitch front page observer
 // TODO: iHeartRadio "buffering" class as playing
 
+// TODO: fix hotkey chooser
+// TODO: fix localization
+// TODO: toggle button icon
+// TODO: optional button
+// TODO: disable button on NONE action
+
 (function() {
   "use strict";
 
@@ -28,8 +34,7 @@
 
   let workers = {}; // workers cache
   let pageMod = null;
-  let hotkeyToggleAllTabs = null;
-  let hotkeySmartPause = null;
+  let hotkey = null;
   let smartPauseTabs = null;
 
   function getPlayPauseElement(xulTab) {
@@ -284,7 +289,7 @@
     panel.port.emit('panel', {
       title: _("chooseHotkeyTitle"),
       toggleAllTabs: simplePrefs.prefs["hotkey-toggleAllTabs"],
-      smartPause: simplePrefs.prefs["hotkey-smartPause"],
+      smartPause: simplePrefs.prefs["hotkey-smartPause"]
     });
 
     panel.port.on('toggleAllTabs', (msg) => {
@@ -298,46 +303,26 @@
     panel.show();
   }
 
-  function resetHotkey() {
-    const hotkeys = require("sdk/hotkeys").Hotkey;
-    if (hotkeyToggleAllTabs) {
-      hotkeyToggleAllTabs.destroy();
-      hotkeyToggleAllTabs = null;
-    }
-    if (hotkeySmartPause) {
-      hotkeySmartPause.destroy();
-      hotkeySmartPause = null;
-    }
-
-    var comboToggleAllTabs = simplePrefs.prefs["hotkey-toggleAllTabs"];
-    if (comboToggleAllTabs !== "") {
-      hotkeyToggleAllTabs = hotkeys({
-        combo: comboToggleAllTabs,
-        onPress: toggleAllTabs
-      });
-    }
-    var comboSmartPause = simplePrefs.prefs["hotkey-smartPause"];
-    if (comboSmartPause !== "") {
-      hotkeySmartPause = hotkeys({
-        combo: comboSmartPause,
-        onPress: smartPause
-      });
+  function buttonAction() {
+    let action = [null, toggleAllTabs, smartPause][simplePrefs.prefs["hotkey-mode"]];
+    if (action) {
+      action();
     }
   }
 
-  function playPauseButton() {
-    const actionButton = require("sdk/ui").ActionButton;
-    actionButton({
+  function createHotkey() {
+    hotkey = require("sdk/hotkeys").Hotkey({
+      combo: simplePrefs.prefs["hotkey-value"],
+      onPress: buttonAction
+    });
+  }
+
+  function createButton() {
+    require("sdk/ui").ActionButton({
       id: "buttonToggleAllTabs",
       label: _("buttonTitleToggleAllTabs"),
       icon: "./images/toggleAllTabs.png",
-      onClick: toggleAllTabs
-    });
-    actionButton({
-      id: "buttonSmartPause",
-      label: _("buttonTitleSmartPause"),
-      icon: "./images/smartPause.png",
-      onClick: smartPause
+      onClick: buttonAction
     });
   }
 
@@ -346,7 +331,7 @@
     simplePrefs.on("invert-indicator", resetIndicators);
     simplePrefs.on("choose-hotkey", chooseHotkey);
     resetPageMod();
-    resetHotkey();
-    playPauseButton();
+    createHotkey();
+    createButton();
   };
 })();
