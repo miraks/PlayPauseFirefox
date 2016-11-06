@@ -7,9 +7,9 @@
 // TODO: iHeartRadio "buffering" class as playing
 
 // TODO: fix localization
-// TODO: toggle button icon
 // TODO: optional button
-// TODO: disable button on NONE action
+// TODO: separate actions for hotkey and button
+// TODO: toggle button icon
 
 (function() {
   "use strict";
@@ -312,7 +312,7 @@
   function createButton() {
     require("sdk/ui").ActionButton({
       id: "buttonToggleAllTabs",
-      label: _("buttonTitleToggleAllTabs"),
+      label: "Play/Pause",
       icon: "./images/toggleAllTabs.png",
       onClick: buttonAction
     });

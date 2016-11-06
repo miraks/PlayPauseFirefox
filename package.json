@@ -64,7 +64,7 @@
       "title": "Choose hotkey",
       "description": "",
       "type": "control",
-      "label": "choose"
+      "label": "Configure"
     },
     {
       "name": "hotkey-value",
