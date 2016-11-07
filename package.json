@@ -47,11 +47,11 @@
       "options": [
         {
           "value": "2",
-          "label": "Smart Pause"
+          "label": "smart_pause"
         },
         {
           "value": "1",
-          "label": "Toggle Play/Pause for all tabs"
+          "label": "toggle_play_pause"
         }
       ]
     },
