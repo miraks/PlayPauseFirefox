@@ -7,7 +7,6 @@
 // TODO: iHeartRadio "buffering" class as playing
 
 // TODO: fix localization
-// TODO: optional button
 // TODO: separate actions for hotkey and button
 // TODO: toggle button icon
 
@@ -17,7 +16,6 @@
   const { viewFor } = require("sdk/view/core");
   const { getTabId } = require("sdk/tabs/utils");
   const simplePrefs = require("sdk/simple-prefs");
-  const _ = require("sdk/l10n").get;
 
   const playSymbol = "▶";
   const pauseSymbol = "❚❚";
