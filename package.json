@@ -43,19 +43,15 @@
       "name": "hotkey-mode",
       "title": "Play/Pause hotkey action",
       "type": "menulist",
-      "value": 0,
+      "value": 2,
       "options": [
         {
-          "value": "0",
-          "label": "None"
+          "value": "2",
+          "label": "Smart Pause"
         },
         {
           "value": "1",
           "label": "Toggle Play/Pause for all tabs"
-        },
-        {
-          "value": "2",
-          "label": "Smart Pause"
         }
       ]
     },

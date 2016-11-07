@@ -6,8 +6,6 @@
 // TODO: Twitch front page observer
 // TODO: iHeartRadio "buffering" class as playing
 
-// TODO: fix localization
-// TODO: separate actions for hotkey and button
 // TODO: toggle button icon
 
 (function() {
@@ -52,7 +50,7 @@
       playPause = chromeDocument.createElement("div");
       playPause.setAttribute("anonid", "play-pause");
       playPause.style.pointerEvents = "all";
-      playPause.style.cursor = "pointer";
+      playPause.style.cursor = "default";
       playPause.style.marginRight = "0.25em";
 
       let tabMixPlusHack = !!xulTab.onMouseCommand && !xulTab.mouseDownSelect;
@@ -291,9 +289,11 @@
   }
 
   function buttonAction() {
-    let action = [null, toggleAllTabs, smartPause][simplePrefs.prefs["hotkey-mode"]];
-    if (action) {
-      action();
+    const toggleModePrefValue = 1;
+    if (simplePrefs.prefs["hotkey-mode"] === toggleModePrefValue) {
+      toggleAllTabs();
+    } else {
+      smartPause();
     }
   }
 
